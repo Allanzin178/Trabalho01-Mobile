@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Trabalho01Mobile">
         <activity
+            android:name=".View.HomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
