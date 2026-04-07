@@ -2,8 +2,15 @@ package com.ucbestudoalln.trabalho01_mobile.Services
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Path
 
-class CepService {
+data class CepData (
+    val localidade: String
+)
+interface CepService {
+    @GET("{cep}/json/")
+    suspend fun buscarCep(@Path("cep") cep: String): CepData
 
 }
 
