@@ -13,6 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Trabalho01Mobile">
         <activity
+            android:name=".View.WeatherResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".View.HistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
