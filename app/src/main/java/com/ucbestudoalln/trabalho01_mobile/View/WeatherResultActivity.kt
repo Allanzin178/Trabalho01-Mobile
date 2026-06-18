@@ -1,7 +1,9 @@
 package com.ucbestudoalln.trabalho01_mobile.View
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.ucbestudoalln.trabalho01_mobile.MainActivity
 import com.ucbestudoalln.trabalho01_mobile.databinding.ActivityWeatherResultBinding
 
 class WeatherResultActivity : AppCompatActivity() {
@@ -23,6 +25,13 @@ class WeatherResultActivity : AppCompatActivity() {
         binding.txtWind.text = "Vento: ${wind} km/h"
 
         binding.btnBack.setOnClickListener {
+            finish()
+        }
+
+        binding.btnGoToMenu.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            startActivity(intent)
             finish()
         }
     }

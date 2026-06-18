@@ -54,9 +54,5 @@ class HomeActivity : AppCompatActivity() {
                 binding.campoCep.error = "CEP inválido"
             }
         }
-
-        binding.btnVerHistorico.setOnClickListener {
-            startActivity(Intent(this, HistoryActivity::class.java))
-        }
     }
 }

@@ -1,8 +1,9 @@
 package com.ucbestudoalln.trabalho01_mobile.ViewModel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ucbestudoalln.trabalho01_mobile.Model.GeocodingResult
 import com.ucbestudoalln.trabalho01_mobile.Model.WeatherHistory
@@ -10,8 +11,8 @@ import com.ucbestudoalln.trabalho01_mobile.Model.WeatherRepository
 import com.ucbestudoalln.trabalho01_mobile.Model.WeatherResponse
 import kotlinx.coroutines.launch
 
-class WeatherViewModel : ViewModel() {
-    private val repository = WeatherRepository()
+class WeatherViewModel(application: Application) : AndroidViewModel(application) {
+    private val repository = WeatherRepository(application)
 
     private val _weatherData = MutableLiveData<Pair<GeocodingResult, WeatherResponse>?>()
     val weatherData: LiveData<Pair<GeocodingResult, WeatherResponse>?> = _weatherData
@@ -32,7 +33,26 @@ class WeatherViewModel : ViewModel() {
         }
     }
 
+    fun searchWeatherByCoordinates(lat: Double, lon: Double, cityName: String? = null) {
+        viewModelScope.launch {
+            _loading.value = true
+            val result = repository.getWeatherByCoordinates(lat, lon, cityName)
+            _weatherData.value = result
+            _loading.value = false
+            refreshHistory()
+        }
+    }
+
     fun refreshHistory() {
-        _history.value = WeatherRepository.getHistory()
+        viewModelScope.launch {
+            _history.value = repository.getHistory()
+        }
+    }
+
+    fun clearHistory() {
+        viewModelScope.launch {
+            repository.clearHistory()
+            refreshHistory()
+        }
     }
 }

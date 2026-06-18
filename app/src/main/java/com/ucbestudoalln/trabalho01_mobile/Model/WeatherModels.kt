@@ -31,6 +31,7 @@ data class CurrentWeather(
 
 // Search History Model
 data class WeatherHistory(
+    val id: Int = 0,
     val cep: String,
     val city: String,
     val temperature: Double,

@@ -1,134 +1,71 @@
-# 📱 App de Consulta Climática por CEP
+# 📱 Clima App - Trabalho Mobile
 
-Aplicativo Android nativo desenvolvido em **Kotlin**, utilizando arquitetura **MVVM**, com o objetivo de fornecer informações climáticas a partir de um CEP brasileiro, integrando múltiplas APIs.
-
----
-
-## 📌 Visão Geral
-
-O sistema realiza consultas em cadeia utilizando três APIs:
-
-1. **ViaCEP** → obtém dados de endereço a partir do CEP  
-2. **Open-Meteo Geocoding** → converte cidade em latitude e longitude  
-3. **Open-Meteo Forecast** → retorna dados climáticos com base nas coordenadas  
+Aplicativo Android nativo desenvolvido em **Kotlin**, utilizando arquitetura **MVVM**, integrando múltiplas APIs e recursos avançados de hardware para fornecer previsões climáticas precisas via CEP ou Geolocalização.
 
 ---
 
-## 🧱 Arquitetura
+## 📌 Funcionalidades Principais
 
-O projeto segue o padrão **MVVM (Model-View-ViewModel)**:
+O aplicativo atende a todos os critérios técnicos exigidos, oferecendo:
 
-### View
-- Activities e XML Layouts
-- Componentes como `TextView`, `EditText`, `ListView`
-
-### ViewModel
-- Gerencia estados (Loading, Success, Error)
-- Utiliza `LiveData` para atualizar a UI automaticamente
-- Uso de **Coroutines** para chamadas assíncronas
-
-### Model / Repository
-- Consumo de APIs com **Retrofit**
-- Regras de negócio
-- Validação de CEP
-- Mapeamento de JSON com data classes
+1.  **Busca por CEP**: Fluxo integrado (ViaCEP + Open-Meteo) para obter o clima de qualquer região do Brasil.
+2.  **Busca por Geolocalização (Mapa)**: Integração com **Google Maps** que permite ao usuário selecionar qualquer ponto no globo para verificar o clima instantaneamente.
+3.  **Histórico de Consultas**: Persistência local de todas as buscas realizadas.
+4.  **Temas Personalizados**: Opção de alternar entre modo claro e escuro, com preferência salva no dispositivo.
+5.  **Interação por Movimento**: Limpeza do histórico de buscas ao chacoalhar o celular (Acelerômetro).
 
 ---
 
-## ✅ Etapa 1 — Implementação
+## 🧱 Critérios Técnicos Atendidos
 
-Funcionalidades já desenvolvidas:
-
-### 🔎 Consulta Climática
-- Busca de clima a partir de um CEP válido
-- Fluxo encadeado entre APIs (CEP → localização → clima)
-
-### 🔗 Integração com APIs
-- ViaCEP
-- Open-Meteo (Geocoding + Forecast)
-
-### 🧠 Arquitetura e Tecnologias
-- MVVM com ViewModel e LiveData
-- Kotlin Coroutines para chamadas assíncronas
-- Retrofit para consumo de API
-
-### 🧾 Funcionalidades do App
-- Inserção de CEP (8 dígitos)
-- Validação de entrada (somente números)
-- Exibição de:
-  - Cidade
-  - Estado
-  - Temperatura
-  - Sensação térmica
-- Histórico de consultas com **ListView**
-
-### 🎨 Interface
-- Material Design 3
-- Suporte a tema claro/escuro
-- Uso de:
-  - TextInputLayout
-  - MaterialButton
-  - CardView
-  - Snackbar para erros
-
-### 🔄 Navegação
-- Uso de **Intents**
-- Passagem de parâmetros entre telas
-
-### ⚠️ Tratamento de Erros
-- CEP inválido
-- Falha de API
-- Falta de conexão
+-   **Arquitetura MVVM**: Separação clara de responsabilidades entre View, ViewModel e Model/Repository.
+-   **Mínimo de 5 Telas**:
+    -   Menu Principal (Navegação central e troca de tema)
+    -   Busca por CEP (Entrada de dados e validação)
+    -   Busca por Geolocalização (Integração com Mapa)
+    -   Resultado do Clima (Exibição detalhada)
+    -   Histórico de Consultas (Listagem persistente)
+-   **API REST**: Consumo das APIs ViaCEP e Open-Meteo via **Retrofit**.
+-   **Persistência de Dados**: Uso de **SQLite** nativo para armazenamento seguro do histórico de buscas.
+-   **SharedPreferences**: Armazenamento local da preferência de tema do usuário.
+-   **Processamento em Segundo Plano**: Operações de rede e banco de dados executadas via **Kotlin Coroutines**.
+-   **Testes Unitários**: Implementação de testes para validar a lógica de criação de dados e timestamps.
+-   **Sensores**: Uso do **Acelerômetro** para detecção de chacoalho (Shake) para limpar o histórico.
+-   **Mapas**: Integração completa com **Google Maps SDK**.
 
 ---
 
-## 🔄 Fluxo do Sistema
+## ⚠️ Configuração Obrigatória (Google Maps)
 
-1. Usuário insere o CEP  
-2. Validação do formato  
-3. Consulta na API ViaCEP  
-4. Conversão para latitude/longitude  
-5. Consulta climática  
-6. Exibição dos dados na tela  
+Para que a funcionalidade de mapa carregue corretamente e não exiba uma tela branca, é **obrigatório** configurar uma Chave de API do Google Cloud:
 
-> Regra: cada etapa só executa se a anterior for bem-sucedida.
-
----
-
-## 🚧 Etapa 2 — Escopo (Em Planejamento)
-
-Melhorias e novas funcionalidades previstas:
-
-### 🔍 Novas Funcionalidades
-- Busca direta por **nome de município**
-- Tela inicial com clima de **cidades principais**
-- Sistema de **login opcional**
-- Implementação de um **chatbot**
-
-### 🎨 Melhorias de Interface
-- Refinamento do design (UI/UX)
-- Melhor organização visual dos dados
-
-### ⚙️ Melhorias Técnicas
-- Tratamento de erros mais robusto
-- Melhor qualidade e detalhamento dos dados climáticos
+1.  Acesse o [Google Cloud Console](https://console.cloud.google.com/).
+2.  Habilite a **Maps SDK for Android**.
+3.  Gere uma **API Key**.
+4.  Abra o arquivo `app/src/main/AndroidManifest.xml`.
+5.  Substitua o valor no campo abaixo pela sua chave:
+    ```xml
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="SUA_CHAVE_AQUI" />
+    ```
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-- Kotlin  
-- Android Studio  
-- MVVM  
-- LiveData  
-- Coroutines  
-- Retrofit  
-- Material Design 3  
+-   **Linguagem**: Kotlin
+-   **Ambiente**: Android Studio
+-   **Interface**: XML (ConstraintLayout, Material Design 3)
+-   **Comunicação**: Retrofit + GSON
+-   **Banco de Dados**: SQLite
+-   **Async**: Coroutines + LiveData
+-   **Hardware**: Sensor Manager (Acelerômetro) + Google Maps SDK
 
 ---
 
 ## 👨‍💻 Desenvolvedores
 
-- Allan Barros  
-- Daniel da Cunha  
-- Kalleby Rodrigues
+-   Allan Barros
+-   Daniel da Cunha
+-   Kalleby Rodrigues

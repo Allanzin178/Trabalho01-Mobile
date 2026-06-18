@@ -1,37 +1,50 @@
 package com.ucbestudoalln.trabalho01_mobile.Model
 
+import android.content.Context
 import com.ucbestudoalln.trabalho01_mobile.Services.ApiClient
 import com.ucbestudoalln.trabalho01_mobile.Services.WeatherApiClient
+import java.util.Locale
 
-class WeatherRepository {
+class WeatherRepository(context: Context) {
     private val cepService = ApiClient.service
     private val geocodingService = WeatherApiClient.geocodingService
     private val weatherService = WeatherApiClient.weatherService
+    private val db = WeatherDatabase(context)
 
-    // In-memory history for now
-    companion object {
-        private val history = mutableListOf<WeatherHistory>()
-        fun getHistory() = history.toList()
-        fun addHistory(item: WeatherHistory) {
-            history.add(0, item)
-        }
-    }
+    suspend fun getHistory() = db.getAllHistory()
+
+    suspend fun clearHistory() = db.deleteAll()
 
     suspend fun getWeatherByCep(cep: String): Pair<GeocodingResult, WeatherResponse>? {
         return try {
-            // 1. Get city name from CEP
             val cepData = cepService.buscarCep(cep)
             val cityName = cepData.localidade
 
-            // 2. Get coordinates from city name
             val geoResponse = geocodingService.searchCity(cityName)
             val location = geoResponse.results?.firstOrNull() ?: return null
 
-            // 3. Get weather from coordinates
             val weather = weatherService.getWeather(location.latitude, location.longitude)
 
-            // 4. Save to history
-            addHistory(WeatherHistory(cep, location.name, weather.currentWeather.temperature))
+            db.insertHistory(WeatherHistory(cep = cep, city = location.name, temperature = weather.currentWeather.temperature))
+
+            Pair(location, weather)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    suspend fun getWeatherByCoordinates(lat: Double, lon: Double, cityName: String? = null): Pair<GeocodingResult, WeatherResponse>? {
+        return try {
+            val weather = weatherService.getWeather(lat, lon)
+            
+            val location = GeocodingResult(
+                name = cityName ?: "Coordenadas",
+                latitude = lat,
+                longitude = lon,
+                admin1 = String.format(Locale.getDefault(), "%.4f, %.4f", lat, lon)
+            )
+
+            db.insertHistory(WeatherHistory(cep = "Mapa", city = cityName ?: "Local via Mapa", temperature = weather.currentWeather.temperature))
 
             Pair(location, weather)
         } catch (e: Exception) {
